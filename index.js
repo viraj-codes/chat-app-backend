@@ -1,12 +1,31 @@
 const express = require('express')
+
+
 const app = express()
 
 const http = require('http')
 const cors = require('cors')
 
+
+
+require('dotenv').config()
+
+// Db connection
+require('./config/db.js')
+
 const { Server } = require('socket.io')
+const ChatRoute = require('./Routes/ChatRoute')
+const MessageRoute = require('./Routes/MessageRoute')
 
 app.use(cors())
+
+// body parser middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+
+
+app.use('/chat',ChatRoute)
+app.use('/message',MessageRoute)
 
 const server = http.createServer(app);
 const io = new Server(server, {
