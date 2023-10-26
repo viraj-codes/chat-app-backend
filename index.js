@@ -18,7 +18,7 @@ const { Server } = require('socket.io')
 // Routes
 const ChatRoute = require('./Routes/ChatRoute')
 const MessageRoute = require('./Routes/MessageRoute')
-const userRoutes = require('./routes/users')
+const userRoutes = require('./Routes/users')
 
 app.use(cors())
 
