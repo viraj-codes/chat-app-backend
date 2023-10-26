@@ -14,8 +14,11 @@ require('dotenv').config()
 require('./config/db.js')
 
 const { Server } = require('socket.io')
+
+// Routes
 const ChatRoute = require('./Routes/ChatRoute')
 const MessageRoute = require('./Routes/MessageRoute')
+const userRoutes = require('./routes/users')
 
 app.use(cors())
 
@@ -26,6 +29,7 @@ app.use(express.json())
 
 app.use('/chat',ChatRoute)
 app.use('/message',MessageRoute)
+app.use('/users', userRoutes)
 
 const server = http.createServer(app);
 const io = new Server(server, {
