@@ -3,6 +3,25 @@ const bcrypt = require("bcryptjs");
 const userModel = require("../Models/users");
 const jwt = require("jsonwebtoken");
 
+
+const getUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await userModel.findById(id);
+    console.log('user', user)
+    if (user) {
+      const { password, ...otherDetails } = user._doc;
+
+      res.status(200).json(otherDetails);
+    } else {
+      res.status(404).json("No such User");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
   try {
@@ -42,16 +61,18 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const userData = await userModel.findOne({ email }).lean();
+    console.log('userData :>> ', userData);
     // res.json(userData);
     // return
     if (userData) {
-      const { firstName, lastName } = userData;
+      const { firstName, lastName,_id } = userData;
       const isPasswordMatch = await bcrypt.compare(password, userData.password);
       console.log('isPasswordMatch :>> ', isPasswordMatch);
       if (isPasswordMatch) {
         const payload = {
           firstName,
           lastName,
+          _id,
         };
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
           expiresIn: "10h",
@@ -84,6 +105,7 @@ const login = async (req, res, next) => {
 module.exports = {
   register,
   login,
+  getUser,
 };
 
 
